@@ -1,4 +1,5 @@
 using dotnet6WebApi.Data;
+using dotnet6WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -14,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Host.UseSerilog((ctx, lc) =>
                 lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 
@@ -23,6 +25,8 @@ builder.Services.AddCors(options =>
         b => b.AllowAnyHeader()
                                    .AllowAnyOrigin());
 });
+
+builder.Services.AddScoped<IManufacturerService, ManufacturerService>();
 
 var app = builder.Build();
 

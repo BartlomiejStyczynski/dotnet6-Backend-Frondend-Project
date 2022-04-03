@@ -30,6 +30,9 @@ namespace dotnet6WebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -48,9 +51,7 @@ namespace dotnet6WebApi.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Decsription")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ISBN")
                         .HasColumnType("int");
@@ -59,7 +60,6 @@ namespace dotnet6WebApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
@@ -75,10 +75,15 @@ namespace dotnet6WebApi.Migrations
             modelBuilder.Entity("dotnet6WebApi.Models.Product", b =>
                 {
                     b.HasOne("dotnet6WebApi.Models.Manufacturer", "Manufacturer")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("ManufacturerId");
 
                     b.Navigation("Manufacturer");
+                });
+
+            modelBuilder.Entity("dotnet6WebApi.Models.Manufacturer", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
