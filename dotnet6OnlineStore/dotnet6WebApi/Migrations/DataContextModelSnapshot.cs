@@ -30,16 +30,13 @@ namespace dotnet6WebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Manufacturers");
+                    b.ToTable("Manufacturers", (string)null);
                 });
 
             modelBuilder.Entity("dotnet6WebApi.Models.Product", b =>
@@ -51,7 +48,9 @@ namespace dotnet6WebApi.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Decsription")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("ISBN")
                         .HasColumnType("int");
@@ -60,6 +59,7 @@ namespace dotnet6WebApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
@@ -69,21 +69,16 @@ namespace dotnet6WebApi.Migrations
 
                     b.HasIndex("ManufacturerId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("dotnet6WebApi.Models.Product", b =>
                 {
                     b.HasOne("dotnet6WebApi.Models.Manufacturer", "Manufacturer")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ManufacturerId");
 
                     b.Navigation("Manufacturer");
-                });
-
-            modelBuilder.Entity("dotnet6WebApi.Models.Manufacturer", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

@@ -36,10 +36,10 @@ namespace dotnet6WebApi.Services
 
                 response.Data = $"";
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                response.Success = false;
+                response.Message = e.Message;
             }
 
             return response;
@@ -50,7 +50,17 @@ namespace dotnet6WebApi.Services
             var response = new ServerResponse<Manufacturer>();
             try
             {
-                var manuInDb = await _context.Manufacturers.FirstOrDefaultAsync();
+                var manuInDb = await _context.Manufacturers.FirstOrDefaultAsync(m => m.Id == id);
+                if (manuInDb == null)
+                {
+                    response.Success = false;
+                    response.Message = $"Manufacturer with ID:{id} not found.";
+                }
+
+                else
+                {
+                    response.Data = manuInDb;
+                }
             }
             catch (Exception ex)
             {
@@ -58,11 +68,35 @@ namespace dotnet6WebApi.Services
                 response.Message = ex.Message;
             }
 
+            return response;
+
         }
 
-        public Task<ServerResponse<IEnumerable<Manufacturer>>> GetManufacturers()
+        public async Task<ServerResponse<IEnumerable<Manufacturer>>> GetManufacturers()
         {
-            throw new NotImplementedException();
+            var response = new ServerResponse<IEnumerable<Manufacturer>>();
+            var manufacturersList = await _context.Manufacturers.ToListAsync();
+
+            try
+            {
+                if (manufacturersList.Count == 0)
+                {
+                    response.Success = false;
+                    response.Message = "No manufacturers found.";
+                }
+
+                else
+                {
+                    response.Data = manufacturersList;
+                    response.Message = "List sent.";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message;
+            }
+            return response;
         }
 
         public Task<ServerResponse<Manufacturer>> PostManufacturer(Manufacturer manufacturer)
